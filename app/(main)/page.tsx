@@ -59,7 +59,7 @@ export default async function Home({
         </CardHeader>
         <Separator className="mb-4" />
         <form action="/" className="flex flex-col gap-4">
-          <CardContent className='flex flex-col gap-4'>
+          <CardContent className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <Label className="text-sm font-semibold">Search</Label>
               <Input
@@ -92,8 +92,11 @@ export default async function Home({
               </div>
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex gap-2">
             <Button type="submit">Filter</Button>
+            <Link href="/">
+              <Button variant="outline">Clear</Button>
+            </Link>
           </CardFooter>
         </form>
       </Card>
@@ -160,8 +163,13 @@ export default async function Home({
         {/* Footer */}
         <div className="flex flex-row justify-between items-center p-4 border-t">
           <p className="text-sm">
-            Showing <strong>{PAGINATION_LIMIT}</strong> out of{' '}
-            <strong>{totalEntries}</strong> invoices.
+            Showing{' '}
+            <strong>
+              {PAGINATION_LIMIT < totalEntries
+                ? PAGINATION_LIMIT
+                : totalEntries}
+            </strong>{' '}
+            out of <strong>{totalEntries}</strong> invoices.
           </p>
           <Pagination>
             <PaginationContent>
