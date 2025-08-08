@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ExportInvoiceButton from '@/components/buttons/export-invoice-button';
+import { ArrowLeft } from 'lucide-react';
+import BackButton from '@/components/buttons/back-button';
 
 interface ProductPageParams {
   params: {
@@ -27,7 +29,8 @@ const InvoicePage = async ({ params }: ProductPageParams) => {
 
   return (
     <main className="py-10 px-96">
-      <div className="mb-4">
+      <div className="mb-4 flex flex-row justify-between align-middle">
+        <BackButton />
         <ExportInvoiceButton invoiceId={params.id} />
       </div>
       <Card id="invoice-print">
