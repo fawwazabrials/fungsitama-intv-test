@@ -1,17 +1,55 @@
-import { pgTable, varchar, timestamp, boolean } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  varchar,
+  timestamp,
+  boolean,
+  text,
+  date,
+  integer,
+  pgEnum,
+  numeric,
+} from 'drizzle-orm/pg-core';
 
-export const activityInCore = pgTable('test', {
-  id: varchar({ length: 36 })
+export const invoicesStatusEnum = pgEnum('invoice_status', [
+  'Draft',
+  'Sent',
+  'Paid',
+  'Cancelled',
+]);
+
+export const invoices = pgTable('invoices', {
+  id: varchar('id', { length: 36 })
     .primaryKey()
     .notNull()
     .default('gen_random_uuid()'),
-  createdAt: timestamp('created_at', { precision: 6, mode: 'string' }).default(
-    '2025-03-04 09:11:01.26378'
-  ),
-  updatedAt: timestamp('updated_at', { precision: 6, mode: 'string' }),
-  isDeleted: boolean('is_deleted').default(false),
-  deletedAt: timestamp('deleted_at', { precision: 6, mode: 'string' }),
-  createdBy: varchar('created_by', { length: 255 }),
-  updatedBy: varchar('updated_by', { length: 255 }),
-  deletedBy: varchar('deleted_by', { length: 255 }),
+  createdAt: timestamp('created_at', {
+    precision: 6,
+    mode: 'string',
+  }).defaultNow(),
+  updatedAt: timestamp('updated_at', {
+    precision: 6,
+    mode: 'string',
+  }).defaultNow(),
+
+  invoiceNumber: varchar('invoice_number', { length: 36 }).notNull().unique(),
+  clientName: varchar('client_name', { length: 255 }).notNull(),
+  clientAddress: text('client_address').notNull(),
+  issueDate: date('issue_date').notNull(),
+  dueDate: date('due_date').notNull(),
+  totalAmount: integer('total_amount').notNull(),
+  status: invoicesStatusEnum('status').notNull().default('Draft'),
+});
+
+export const invoiceItems = pgTable('invoice_items', {
+  id: varchar('id', { length: 36 })
+    .primaryKey()
+    .notNull()
+    .default('gen_random_uuid()'),
+  invoiceId: varchar('id', { length: 36 })
+    .notNull()
+    .references(() => invoices.id),
+  description: varchar('description', { length: 36 }).notNull(),
+  quantity: integer('quantity').notNull(),
+  unitPrice: numeric('unit_price', { precision: 10 }).notNull(),
+  lineTotal: numeric('line_total', { precision: 10 }).notNull(),
 });
