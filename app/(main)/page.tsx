@@ -18,8 +18,9 @@ import {
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { getAllInvoices } from '@/repositories/invoices-repo';
+import { Eye, Pencil, Printer } from 'lucide-react';
 
-const PAGINATION_LIMIT = 2;
+const PAGINATION_LIMIT = 10;
 
 export default async function Home({
   searchParams,
@@ -50,7 +51,7 @@ export default async function Home({
             <TableHead>Due Date</TableHead>
             <TableHead>Total Amount</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+            <TableHead className="text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -64,7 +65,13 @@ export default async function Home({
               <TableCell>{invoice.dueDate}</TableCell>
               <TableCell>{invoice.totalAmount}</TableCell>
               <TableCell>{invoice.status}</TableCell>
-              <TableCell className="text-right">Action</TableCell>
+              <TableCell className="flex flex-row gap-2 justify-center">
+                <Link href={`/invoices/${invoice.id}`}>
+                  <Eye className="size-6" />
+                </Link>
+                <Pencil className="size-6" />
+                <Printer className="size-6" />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

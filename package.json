@@ -15,7 +15,7 @@
   "author": "Fungsitama",
   "license": "ISC",
   "dependencies": {
-    "@hookform/resolvers": "^3.9.1",
+    "@hookform/resolvers": "^5.2.1",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-aspect-ratio": "^1.1.1",
@@ -61,6 +61,7 @@
     "framer-motion": "^11.15.0",
     "handlebars": "^4.7.8",
     "handlebars-loader": "^1.7.3",
+    "html2pdf.js": "^0.10.3",
     "http-status-codes": "^2.3.0",
     "input-otp": "^1.4.2",
     "jotai": "^2.10.4",
@@ -90,6 +91,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/bcrypt": "^5.0.2",
+    "@types/html2pdf.js": "^0.10.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

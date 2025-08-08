@@ -30,7 +30,6 @@ import {
 } from '../ui/table';
 import RemoveInvoiceItemDialog from './remove-invoice-item-dialog';
 import { createNewInvoice } from '@/actions/create-new-invoice';
-import { Label } from '../ui/label';
 
 const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
   const router = useRouter();
@@ -39,11 +38,11 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
     resolver: zodResolver(createNewInvoiceSchema),
     defaultValues: {
       invoiceNumber,
-      invoiceDate: new Date().toLocaleDateString(),
+      invoiceDate: new Date().toISOString().split('T')[0],
       clientName: '',
       clientAddress: '',
-      dueDate: new Date().toLocaleDateString(),
-      issueDate: new Date().toLocaleDateString(),
+      dueDate: new Date().toISOString().split('T')[0],
+      issueDate: new Date().toISOString().split('T')[0],
       status: 'Draft',
       totalAmount: 0,
       items: [],
@@ -147,6 +146,7 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -160,9 +160,9 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
                   <Input
                     placeholder={form.getValues().invoiceDate}
                     {...field}
-                    disabled
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />

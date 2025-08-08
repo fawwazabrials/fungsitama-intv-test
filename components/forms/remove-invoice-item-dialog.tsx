@@ -37,12 +37,12 @@ const RemoveInvoiceItemDialog = ({
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button type="button" variant="destructive">
-          Add Item
+          Remove Item
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Item</DialogTitle>
+          <DialogTitle>Removes an Item</DialogTitle>
 
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2 mt-6">

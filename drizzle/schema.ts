@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { relations } from 'drizzle-orm';
 import {
   pgTable,
   varchar,
@@ -55,3 +56,14 @@ export const invoiceItems = pgTable('invoice_items', {
   unitPrice: numeric('unit_price', { precision: 10 }).notNull(),
   lineTotal: numeric('line_total', { precision: 10 }).notNull(),
 });
+
+export const invoicesRelations = relations(invoices, ({ many }) => ({
+  items: many(invoiceItems),
+}));
+
+export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
+  invoice: one(invoices, {
+    fields: [invoiceItems.invoiceId],
+    references: [invoices.id],
+  }),
+}));
