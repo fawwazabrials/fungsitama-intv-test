@@ -32,6 +32,7 @@ export const invoices = pgTable('invoices', {
   }).defaultNow(),
 
   invoiceNumber: varchar('invoice_number', { length: 36 }).notNull().unique(),
+  invoiceDate: date('invoice_date').notNull(),
   clientName: varchar('client_name', { length: 255 }).notNull(),
   clientAddress: text('client_address').notNull(),
   issueDate: date('issue_date').notNull(),
