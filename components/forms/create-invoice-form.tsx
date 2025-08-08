@@ -2,7 +2,7 @@
 
 import { createNewInvoiceSchema } from '@/dtos/invoice-dto';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import z from 'zod';
 import { Button } from '../ui/button';
 import { Loader2 } from 'lucide-react';
@@ -20,6 +20,16 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { insertInvoice } from '@/repositories/invoices-repo';
 import { toast } from 'sonner';
+import AddInvoiceItemDialog from './add-invoice-item-dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table';
+import RemoveInvoiceItemDialog from './remove-invoice-item-dialog';
 
 const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
   const router = useRouter();
@@ -38,6 +48,10 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
       items: [],
     },
   });
+  const itemsArray = useFieldArray({
+    control: form.control,
+    name: 'items',
+  });
 
   const onSubmit = async (values: z.infer<typeof createNewInvoiceSchema>) => {
     setIsLoading(true);
@@ -51,6 +65,38 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
     toast.success('Invoice created');
     router.push('/');
     setIsLoading(false);
+  };
+  const addItem = async ({
+    description,
+    quantity,
+    unitPrice,
+  }: {
+    description: string;
+    quantity: number;
+    unitPrice: number;
+  }) => {
+    console.log({
+      description,
+      quantity,
+      unitPrice,
+      lineTotal: quantity * unitPrice,
+    });
+    itemsArray.append({
+      description,
+      quantity,
+      unitPrice,
+      lineTotal: quantity * unitPrice,
+    });
+    console.log(itemsArray.fields);
+
+    toast.success('Item added!');
+  };
+  const removeItem = async ({ description }: { description: string }) => {
+    const itemIdx = itemsArray.fields.findIndex(
+      (it) => it.description === description
+    );
+    if (itemIdx === -1) return;
+    itemsArray.remove(itemIdx);
   };
 
   return (
@@ -178,6 +224,37 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
             )}
           />
         </div>
+
+        <div className="flex flex-row justify-between align-middle mt-8">
+          <h2 className="font-bold">Invoice Items</h2>
+          <div className="flex flex-row gap-2">
+            <AddInvoiceItemDialog addItem={addItem} />
+            <RemoveInvoiceItemDialog removeItem={removeItem} />
+          </div>
+        </div>
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Description</TableHead>
+              <TableHead>Qty</TableHead>
+              <TableHead>Unit Price</TableHead>
+              <TableHead>Total</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {itemsArray.fields.map((item) => (
+              <TableRow key={item.description}>
+                <TableCell className="font-medium">
+                  {item.description}
+                </TableCell>
+                <TableCell>{item.quantity}</TableCell>
+                <TableCell>{item.unitPrice}</TableCell>
+                <TableCell>{item.lineTotal}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </form>
     </Form>
   );
