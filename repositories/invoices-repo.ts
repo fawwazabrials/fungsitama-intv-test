@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db';
 import { invoices } from '@/drizzle/schema';
-import { eq, count } from 'drizzle-orm';
+import { eq, count, or, ilike } from 'drizzle-orm';
 
 export async function getAllInvoices({
   limit,
@@ -13,7 +13,14 @@ export async function getAllInvoices({
   page: number;
   query?: string;
 }) {
-  const totalEntries = (await db.select({ count: count() }).from(invoices))[0]
+  const queries = query
+      ? or(
+          ilike(invoices.invoiceNumber, `%${query}%`),
+          ilike(invoices.clientName, `%${query}%`)
+        )
+      : undefined;
+
+  const totalEntries = (await db.select({ count: count() }).from(invoices).where(queries))[0]
     .count;
   const totalPages = Math.floor(totalEntries / limit) + 1;
 
@@ -21,6 +28,7 @@ export async function getAllInvoices({
     invoices: await db.query.invoices.findMany({
       limit,
       offset: limit * (page - 1),
+      where: queries
     }),
     totalEntries,
     totalPages,
