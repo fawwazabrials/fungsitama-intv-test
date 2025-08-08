@@ -46,8 +46,8 @@ export const invoiceItems = pgTable('invoice_items', {
   id: varchar('id', { length: 36 })
     .primaryKey()
     .notNull()
-    .default('gen_random_uuid()'),
-  invoiceId: varchar('id', { length: 36 })
+    .$defaultFn(() => randomUUID()),
+  invoiceId: varchar('invoice_id', { length: 36 })
     .notNull()
     .references(() => invoices.id),
   description: varchar('description', { length: 36 }).notNull(),
