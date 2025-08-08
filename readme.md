@@ -27,6 +27,7 @@ Karena saya lumayan lama tidak menggunakan Nextjs dalam development saya baru ka
 Toast yang digunakan dalam boilerplate ada komponen Toast dari Shadcn, tetapi entah kenapa toast tidak dapat dipanggil di dalam pages-pages saya. Sampai sekarang pages juga belum mencetak toast ke layar.
 
 3. Batasan waktu
+
 Karena kerugian waktu akibat error form di atas, banyak validasi yang harus di-skip karena keterbatasan waktu :(.
 
 
