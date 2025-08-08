@@ -21,7 +21,7 @@ interface AddInvoiceItemDialogProps {
     description: string;
     quantity: number;
     unitPrice: number;
-  }) => Promise<void>;
+  }) => void;
 }
 
 const AddInvoiceItemDialog = ({ addItem }: AddInvoiceItemDialogProps) => {
@@ -36,7 +36,7 @@ const AddInvoiceItemDialog = ({ addItem }: AddInvoiceItemDialogProps) => {
     unitPrice?: string;
   }>({});
 
-  const handleClick = async () => {
+  const handleClick = () => {
     setIsLoading(true);
 
     const result = insertInvoiceItemWithoutTotalSchema.safeParse({
@@ -46,7 +46,7 @@ const AddInvoiceItemDialog = ({ addItem }: AddInvoiceItemDialogProps) => {
     });
 
     if (result.success) {
-      await addItem(result.data);
+      addItem(result.data);
 
       setErrors({});
       setDescription('');

@@ -33,6 +33,7 @@ import { createNewInvoice } from '@/actions/create-new-invoice';
 
 const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof createNewInvoiceSchema>>({
     resolver: zodResolver(createNewInvoiceSchema),
@@ -75,11 +76,12 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
 
     form.reset();
 
-    toast.success('Invoice created');
+    toast.success(`Invoice "${invoiceNumber}" created!`);
     router.push('/');
+
     setIsLoading(false);
   };
-  const addItem = async ({
+  const addItem = ({
     description,
     quantity,
     unitPrice,
@@ -88,28 +90,26 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
     quantity: number;
     unitPrice: number;
   }) => {
-    console.log({
-      description,
-      quantity,
-      unitPrice,
-      lineTotal: quantity * unitPrice,
-    });
     itemsArray.append({
       description,
       quantity,
       unitPrice,
       lineTotal: quantity * unitPrice,
     });
-    console.log(itemsArray.fields);
 
-    toast.success('Item added!');
+    toast.success(`Added "${description}" to items!`);
   };
   const removeItem = async ({ description }: { description: string }) => {
     const itemIdx = itemsArray.fields.findIndex(
       (it) => it.description === description
     );
-    if (itemIdx === -1) return;
+    if (itemIdx === -1) {
+      toast.warning(`There is no item named "${description}"!`);
+      return;
+    }
+
     itemsArray.remove(itemIdx);
+    toast.success(`Removed "${description}" from items!`);
   };
 
   return (

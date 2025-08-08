@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import { ReactNode, Suspense } from 'react';
 import './globals.css';
 import { ThemeProvider } from 'next-themes';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/ui/sonner';
 import JotaiProviders from '@/components/jotai-provider';
 import { ProgressBarProviders } from '@/components/progress-bar';
 import { cn } from '@/lib/utils';
