@@ -16,9 +16,8 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { insertInvoice } from '@/repositories/invoices-repo';
 import { toast } from 'sonner';
 import AddInvoiceItemDialog from './add-invoice-item-dialog';
 import {
@@ -30,6 +29,8 @@ import {
   TableRow,
 } from '../ui/table';
 import RemoveInvoiceItemDialog from './remove-invoice-item-dialog';
+import { createNewInvoice } from '@/actions/create-new-invoice';
+import { Label } from '../ui/label';
 
 const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
   const router = useRouter();
@@ -48,15 +49,28 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
       items: [],
     },
   });
+  const itemsWatch = form.watch('items');
   const itemsArray = useFieldArray({
     control: form.control,
     name: 'items',
   });
 
+  useEffect(() => {
+    const total = itemsWatch.reduce((sum, item) => {
+      const value =
+        typeof item.lineTotal === 'number'
+          ? item.lineTotal
+          : parseFloat(item.lineTotal);
+      return sum + (isNaN(value) ? 0 : value);
+    }, 0);
+
+    form.setValue('totalAmount', total);
+  }, [itemsWatch, form]);
+
   const onSubmit = async (values: z.infer<typeof createNewInvoiceSchema>) => {
     setIsLoading(true);
 
-    const newInvoice = await insertInvoice(values);
+    const newInvoice = await createNewInvoice(values);
 
     console.log(newInvoice);
 
@@ -255,6 +269,11 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
             ))}
           </TableBody>
         </Table>
+
+        <h2 className="text-sm ml-auto">
+          Total Price:{' '}
+          <span className="font-bold">{form.getValues().totalAmount}</span>
+        </h2>
       </form>
     </Form>
   );
