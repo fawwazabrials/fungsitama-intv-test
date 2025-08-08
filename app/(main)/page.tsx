@@ -26,8 +26,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Label } from '@radix-ui/react-label';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const PAGINATION_LIMIT = 10;
 
@@ -45,10 +45,10 @@ export default async function Home({
   });
 
   return (
-    <main className="py-8 px-8 flex flex-row gap-4">
+    <main className="py-8 px-8 flex flex-row items-start gap-4">
       <Card className="w-[20%]">
         <CardHeader>
-          <CardTitle className="mt-3">Filters</CardTitle>
+          <CardTitle className="">Filters</CardTitle>
         </CardHeader>
         <Separator className="mb-4" />
         <CardContent>
@@ -88,16 +88,19 @@ export default async function Home({
           <Button>Filter</Button>
         </CardFooter>
       </Card>
-      <Card className="w-full">
-        <CardHeader className="flex flex-row justify-between align-middle">
-          <CardTitle className="mt-3">Invoices</CardTitle>
+      <div className="w-full h-screen flex flex-col">
+        {/* Header */}
+        <div className="flex flex-row justify-between items-center p-4">
+          <h1 className="text-xl font-semibold">Invoices</h1>
           <Link href="/new-invoice">
             <Button variant="outline">
               <Grid2X2Plus className="size-4 mr-2" /> Create Invoice
             </Button>
           </Link>
-        </CardHeader>
-        <CardContent>
+        </div>
+
+        {/* Table */}
+        <div className="flex-1 overflow-auto p-4">
           <Table className="my-4">
             <TableHeader>
               <TableRow>
@@ -143,8 +146,10 @@ export default async function Home({
               )}
             </TableBody>
           </Table>
-        </CardContent>
-        <CardFooter className="flex flex-row justify-between align-middle">
+        </div>
+
+        {/* Footer */}
+        <div className="flex flex-row justify-between items-center p-4 border-t">
           <p className="text-sm">
             Showing <strong>{PAGINATION_LIMIT}</strong> out of{' '}
             <strong>{totalEntries}</strong> invoices.
@@ -186,8 +191,8 @@ export default async function Home({
               )}
             </PaginationContent>
           </Pagination>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </main>
   );
 }
