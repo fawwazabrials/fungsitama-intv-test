@@ -18,7 +18,7 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { insertInvoice, } from '@/repositories/invoices-repo';
+import { insertInvoice } from '@/repositories/invoices-repo';
 import { toast } from 'sonner';
 
 const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
@@ -57,7 +57,7 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
     <Form {...form}>
       <form
         className="flex flex-col gap-4"
-        onClick={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="flex justify-between">
           <Button disabled className="bg-black">
