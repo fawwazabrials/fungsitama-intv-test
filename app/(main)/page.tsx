@@ -1,4 +1,3 @@
-import { invoiceRepo } from '@/repositories/invoices-repo';
 import {
   Table,
   TableBody,
@@ -18,6 +17,7 @@ import {
 } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { getAllInvoices } from '@/repositories/invoices-repo';
 
 const PAGINATION_LIMIT = 2;
 
@@ -28,7 +28,7 @@ export default async function Home({
 }) {
   const page = Number(searchParams?.page ?? '1');
 
-  const { invoices, totalEntries, totalPages } = await invoiceRepo.getAll({
+  const { invoices, totalEntries, totalPages } = await getAllInvoices({
     limit: PAGINATION_LIMIT,
     page,
   });

@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import {
   pgTable,
   varchar,
@@ -21,7 +22,7 @@ export const invoices = pgTable('invoices', {
   id: varchar('id', { length: 36 })
     .primaryKey()
     .notNull()
-    .default('gen_random_uuid()'),
+    .$defaultFn(() => randomUUID()),
   createdAt: timestamp('created_at', {
     precision: 6,
     mode: 'string',
