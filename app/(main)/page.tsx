@@ -16,6 +16,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const PAGINATION_LIMIT = 2;
 
@@ -33,7 +35,12 @@ export default async function Home({
 
   return (
     <main className="py-10 px-16">
-      <h1 className="text-2xl font-bold">Invoices</h1>
+      <div className="flex justify-between">
+        <h1 className="text-2xl font-bold flex-1">Invoices</h1>
+        <Link href="/new-invoice">
+          <Button>Create</Button>
+        </Link>
+      </div>
       <Table className="my-4">
         <TableHeader>
           <TableRow>
@@ -62,8 +69,8 @@ export default async function Home({
           ))}
         </TableBody>
       </Table>
-      <div className="flex flex-row justify-between">
-        <p className='text-sm'>
+      <div className="flex flex-row justify-between align-middle">
+        <p className="text-sm">
           Showing <strong>{PAGINATION_LIMIT}</strong> out of{' '}
           <strong>{totalEntries}</strong> invoices.
         </p>
