@@ -22,18 +22,11 @@ export const insertInvoiceItemSchema = createInsertSchema(invoiceItems)
   })
   .extend({
     description: z.string().min(1, { message: 'Description is required' }),
-    quantity: z.preprocess(
-      (val) => Number(val),
-      z.number().min(1, 'Minimum quantity is 1')
-    ),
-    unitPrice: z.preprocess(
-      (val) => Number(val),
-      z.number().min(1, 'Price cannot be zero or negative')
-    ),
-    lineTotal: z.preprocess(
-      (val) => Number(val),
-      z.number().min(1, 'Total price cannot be zero or negative')
-    ),
+    quantity: z.number().min(1, 'Minimum quantity is 1'),
+    unitPrice: z.number().min(1, 'Price cannot be zero or negative'),
+    lineTotal: z
+      .number()
+      .min(1, 'Total price cannot be zero or negative'),
   });
 
 export const insertInvoiceItemWithoutTotalSchema = insertInvoiceItemSchema.omit(
