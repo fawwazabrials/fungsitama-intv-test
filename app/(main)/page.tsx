@@ -26,12 +26,10 @@ export default async function Home({
 }) {
   const page = Number(searchParams?.page ?? '1');
 
-  const { invoices, totalPages } = await invoiceRepo.getAll({
+  const { invoices, totalEntries, totalPages } = await invoiceRepo.getAll({
     limit: PAGINATION_LIMIT,
     page,
   });
-
-  console.log(totalPages);
 
   return (
     <main className="py-10 px-16">
@@ -64,43 +62,49 @@ export default async function Home({
           ))}
         </TableBody>
       </Table>
-      <Pagination>
-        <PaginationContent>
-          {page !== 1 && (
-            <PaginationItem>
-              <PaginationPrevious href={`/?page=${page - 1}`} />
-            </PaginationItem>
-          )}
+      <div className="flex flex-row justify-between">
+        <p className='text-sm'>
+          Showing <strong>{PAGINATION_LIMIT}</strong> out of{' '}
+          <strong>{totalEntries}</strong> invoices.
+        </p>
+        <Pagination>
+          <PaginationContent>
+            {page !== 1 && (
+              <PaginationItem>
+                <PaginationPrevious href={`/?page=${page - 1}`} />
+              </PaginationItem>
+            )}
 
-          {page > 1 && (
+            {page > 1 && (
+              <PaginationItem>
+                <PaginationLink href={`/?page=${page - 1}`}>
+                  {page - 1}
+                </PaginationLink>
+              </PaginationItem>
+            )}
+
             <PaginationItem>
-              <PaginationLink href={`/?page=${page - 1}`}>
-                {page - 1}
+              <PaginationLink isActive href={`/?page=${page}`}>
+                {page}
               </PaginationLink>
             </PaginationItem>
-          )}
 
-          <PaginationItem>
-            <PaginationLink isActive href={`/?page=${page}`}>
-              {page}
-            </PaginationLink>
-          </PaginationItem>
+            {page < totalPages && (
+              <PaginationItem>
+                <PaginationLink href={`/?page=${page + 1}`}>
+                  {page + 1}
+                </PaginationLink>
+              </PaginationItem>
+            )}
 
-          {page < totalPages && (
-            <PaginationItem>
-              <PaginationLink href={`/?page=${page + 1}`}>
-                {page + 1}
-              </PaginationLink>
-            </PaginationItem>
-          )}
-
-          {page !== totalPages && (
-            <PaginationItem>
-              <PaginationNext href={`/?page=${page + 1}`} />
-            </PaginationItem>
-          )}
-        </PaginationContent>
-      </Pagination>
+            {page !== totalPages && (
+              <PaginationItem>
+                <PaginationNext href={`/?page=${page + 1}`} />
+              </PaginationItem>
+            )}
+          </PaginationContent>
+        </Pagination>
+      </div>
     </main>
   );
 }
