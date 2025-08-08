@@ -3,13 +3,14 @@ import {
   DialogContent,
   DialogTitle,
   DialogTrigger,
+  DialogHeader,
 } from '../ui/dialog';
 import React, { useState } from 'react';
 import { Button } from '../ui/button';
-import { DialogHeader } from '../ui/dialog';
 import { Label } from '@radix-ui/react-label';
 import { Input } from '../ui/input';
 import { Loader2 } from 'lucide-react';
+import { insertInvoiceItemWithoutTotalSchema } from '@/dtos/invoice-dto';
 
 interface AddInvoiceItemDialogProps {
   addItem: ({
@@ -29,18 +30,39 @@ const AddInvoiceItemDialog = ({ addItem }: AddInvoiceItemDialogProps) => {
   const [description, setDescription] = useState('');
   const [quantity, setQuantity] = useState(0);
   const [unitPrice, setUnitPrice] = useState(0);
+  const [errors, setErrors] = useState<{
+    description?: string;
+    quantity?: string;
+    unitPrice?: string;
+  }>({});
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setIsLoading(true);
 
-    addItem({
+    const result = insertInvoiceItemWithoutTotalSchema.safeParse({
       description,
       quantity,
       unitPrice,
     });
 
+    if (result.success) {
+      await addItem(result.data);
+
+      setErrors({});
+      setDescription('');
+      setQuantity(0);
+      setUnitPrice(0);
+      setDialogOpen(false);
+    } else {
+      const fieldErrors: typeof errors = {};
+      result.error.issues.forEach((err) => {
+        const fieldName = err.path[0] as keyof typeof errors;
+        fieldErrors[fieldName] = err.message;
+      });
+      setErrors(fieldErrors);
+    }
+
     setIsLoading(false);
-    setDialogOpen(false);
   };
 
   return (
@@ -60,6 +82,11 @@ const AddInvoiceItemDialog = ({ addItem }: AddInvoiceItemDialogProps) => {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Item name"
               />
+              {errors.description && (
+                <span className="text-red-500 text-sm">
+                  {errors.description}
+                </span>
+              )}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -70,6 +97,9 @@ const AddInvoiceItemDialog = ({ addItem }: AddInvoiceItemDialogProps) => {
                 type="number"
                 placeholder="1"
               />
+              {errors.quantity && (
+                <span className="text-red-500 text-sm">{errors.quantity}</span>
+              )}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -80,6 +110,9 @@ const AddInvoiceItemDialog = ({ addItem }: AddInvoiceItemDialogProps) => {
                 type="number"
                 placeholder="1000"
               />
+              {errors.unitPrice && (
+                <span className="text-red-500 text-sm">{errors.unitPrice}</span>
+              )}
             </div>
 
             <Button disabled={isLoading} onClick={handleClick}>
