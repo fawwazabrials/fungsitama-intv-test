@@ -34,7 +34,12 @@ const PAGINATION_LIMIT = 10;
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: { page?: string; query?: string };
+  searchParams?: {
+    page?: string;
+    query?: string;
+    created_at_from?: string;
+    created_at_to?: string;
+  };
 }) {
   const page = Number(searchParams?.page ?? '1');
 
@@ -42,6 +47,8 @@ export default async function Home({
     limit: 10,
     page,
     query: searchParams?.query,
+    created_from_from: searchParams?.created_at_from,
+    created_from_to: searchParams?.created_at_to,
   });
 
   return (
@@ -51,8 +58,8 @@ export default async function Home({
           <CardTitle className="">Filters</CardTitle>
         </CardHeader>
         <Separator className="mb-4" />
-        <CardContent>
-          <form action="/" className="flex flex-col gap-4">
+        <form action="/" className="flex flex-col gap-4">
+          <CardContent className='flex flex-col gap-4'>
             <div className="flex flex-col gap-1">
               <Label className="text-sm font-semibold">Search</Label>
               <Input
@@ -69,6 +76,7 @@ export default async function Home({
                   <Input
                     name="created_at_from"
                     placeholder="Start date"
+                    defaultValue={searchParams?.created_at_from}
                     type="date"
                   />
                 </div>
@@ -77,18 +85,19 @@ export default async function Home({
                   <Input
                     name="created_at_to"
                     placeholder="End date"
+                    defaultValue={searchParams?.created_at_to}
                     type="date"
                   />
                 </div>
               </div>
             </div>
-          </form>
-        </CardContent>
-        <CardFooter>
-          <Button>Filter</Button>
-        </CardFooter>
+          </CardContent>
+          <CardFooter>
+            <Button type="submit">Filter</Button>
+          </CardFooter>
+        </form>
       </Card>
-      <div className="w-full h-screen flex flex-col">
+      <div className="w-full flex flex-col">
         {/* Header */}
         <div className="flex flex-row justify-between items-center p-4">
           <h1 className="text-xl font-semibold">Invoices</h1>
