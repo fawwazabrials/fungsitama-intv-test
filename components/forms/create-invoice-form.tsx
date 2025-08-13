@@ -3,9 +3,9 @@
 import { createNewInvoiceSchema } from '@/dtos/invoice-dto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm } from 'react-hook-form';
-import z from 'zod';
+import z, { ZodError } from 'zod';
 import { Button } from '../ui/button';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -70,14 +70,22 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
   const onSubmit = async (values: z.infer<typeof createNewInvoiceSchema>) => {
     setIsLoading(true);
 
-    const newInvoice = await createNewInvoice(values);
+    try {
+      const newInvoice = await createNewInvoice(values);
 
-    console.log(newInvoice);
+      console.log(newInvoice);
 
-    form.reset();
+      form.reset();
 
-    toast.success(`Invoice "${invoiceNumber}" created!`);
-    router.push('/');
+      toast.success(`Invoice "${invoiceNumber}" created!`);
+      router.push('/');
+    } catch (err) {
+      if (err instanceof ZodError) {
+        toast.success(
+          `Error on creating invoice: ${JSON.stringify(err.issues)}`
+        );
+      }
+    }
 
     setIsLoading(false);
   };
@@ -99,7 +107,7 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
 
     toast.success(`Added "${description}" to items!`);
   };
-  const removeItem = async ({ description }: { description: string }) => {
+  const removeItem = ({ description }: { description: string }) => {
     const itemIdx = itemsArray.fields.findIndex(
       (it) => it.description === description
     );
@@ -254,6 +262,7 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
               <TableHead>Qty</TableHead>
               <TableHead>Unit Price</TableHead>
               <TableHead>Total</TableHead>
+              <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -265,6 +274,15 @@ const CreateInvoiceForm = ({ invoiceNumber }: { invoiceNumber: string }) => {
                 <TableCell>{item.quantity}</TableCell>
                 <TableCell>{item.unitPrice}</TableCell>
                 <TableCell>{item.lineTotal}</TableCell>
+                <TableCell>
+                  <Button
+                    onClick={() => {
+                      removeItem({ description: item.description });
+                    }}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -8,18 +8,18 @@ import z from 'zod';
 export const createNewInvoice = async (
   values: z.infer<typeof createNewInvoiceSchema>
 ) => {
-  // TODO; validation
+  const data = createNewInvoiceSchema.parse(values);
 
   await db.transaction(async (tx) => {
     const invoiceValues = {
-      invoiceNumber: values.invoiceNumber,
-      invoiceDate: values.invoiceDate,
-      clientName: values.clientName,
-      clientAddress: values.clientAddress,
-      issueDate: values.issueDate,
-      dueDate: values.dueDate,
-      totalAmount: values.totalAmount,
-      status: values.status,
+      invoiceNumber: data.invoiceNumber,
+      invoiceDate: data.invoiceDate,
+      clientName: data.clientName,
+      clientAddress: data.clientAddress,
+      issueDate: data.issueDate,
+      dueDate: data.dueDate,
+      totalAmount: data.totalAmount,
+      status: data.status,
     };
 
     const newInvoice = await tx
@@ -27,7 +27,7 @@ export const createNewInvoice = async (
       .values(invoiceValues)
       .returning();
 
-    const itemValues = values.items.map((item) => ({
+    const itemValues = data.items.map((item) => ({
       description: item.description,
       quantity: item.quantity,
       unitPrice: item.unitPrice.toString(),

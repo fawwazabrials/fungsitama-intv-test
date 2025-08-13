@@ -12,7 +12,7 @@ import { Input } from '../ui/input';
 import { Loader2 } from 'lucide-react';
 
 interface RemoveInvoiceItemDialogProps {
-  removeItem: ({ description }: { description: string }) => Promise<void>;
+  removeItem: ({ description }: { description: string }) => void;
 }
 
 const RemoveInvoiceItemDialog = ({

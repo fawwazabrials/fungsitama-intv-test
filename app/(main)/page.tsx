@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { redirect } from 'next/navigation';
 
 const PAGINATION_LIMIT = 10;
 
@@ -35,12 +36,19 @@ export default async function Home({
   searchParams,
 }: {
   searchParams?: {
-    page?: string;
+    page?: number;
     query?: string;
     created_at_from?: string;
     created_at_to?: string;
   };
 }) {
+  if (
+    searchParams?.page !== undefined &&
+    typeof searchParams?.page !== 'number'
+  ) {
+    redirect('/not-found');
+  }
+
   const page = Number(searchParams?.page ?? '1');
 
   const { invoices, totalEntries, totalPages } = await getAllInvoices({
@@ -100,6 +108,7 @@ export default async function Home({
           </CardFooter>
         </form>
       </Card>
+
       <div className="w-full flex flex-col">
         {/* Header */}
         <div className="flex flex-row justify-between items-center p-4">
